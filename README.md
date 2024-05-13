@@ -1,14 +1,14 @@
 # Cardiac and extracardiac discharge diagnosis prediction from emergency department ECGs using deep learning
 
 
-This repository hosts the code of the paper [Cardiac and extracardiac discharge diagnosis prediction from emergency department ECGs using deep learning](https://arxiv.org/abs/2312.11050)). 
-In this study we introduced a unified deep learning model for ECG analysis, predicting a wide range of cardiac and non-cardiac discharge diagnoses based on the ICD10 classification system with impressive AUROC scores. Our approach excels in handling diverse diagnostic scenarios, suggesting its use as a screening tool in emergency departments, integrated into clinical decision support systems. We therefore propose the MIMIC-IV-ECG-ICD dataset derived from the MIMIC-IV and MIMIC-IV-ECG databases. 
+This repository hosts the code of the paper [Prospects for AI-Enhanced ECG as a Unified Screening Tool for Cardiac and Non-Cardiac Conditions -- An Explorative Study in Emergency Care](https://arxiv.org/abs/2312.11050)). <ins>Accepted by European Heart Journal Digital Health</ins>
+In this study we introduced a unified deep learning model for ECG analysis, predicting a wide range of cardiac and non-cardiac discharge diagnoses based on the ICD10 classification system with impressive AUROC scores. Our approach excels in handling diverse diagnostic scenarios, suggesting its use as a screening tool in emergency departments, integrated into clinical decision support systems. We therefore propose the MIMIC-IV-ECG-ICD-ED dataset primarily for benchmark purposes derived from the MIMIC-IV and MIMIC-IV-ECG databases.
 
-## MIMIC-IV-ECG-ICD experimental workflow:
+## MIMIC-IV-ECG-ICD-ED experimental workflow:
 ![alt text](https://github.com/AI4HealthUOL/ECG-MIMIC/blob/main/reports/pipeline_mimic-1.png?style=centerme)
 
 
-## MIMIC-IV-ECG-ICD statements-distributions:
+## MIMIC-IV-ECG-ICD-ED statements-distributions:
 (A) represents the distribution of statements according to chapters (all percentages as relative fractions compared to the dataset size), whereas (B) represents the distribution of cardiac conditions within chapter IX.
 ![alt text](https://github.com/AI4HealthUOL/ECG-MIMIC/blob/main/reports/dataset_all-1.png?style=centerme)
 
@@ -18,7 +18,7 @@ In this study we introduced a unified deep learning model for ECG analysis, pred
 ![alt text](https://github.com/AI4HealthUOL/ECG-MIMIC/blob/main/reports/dataset_ed-1.png?style=centerme)
 
 
-## ED subset and MIMIC-IV-ECG-ICD statistics:
+## ED subset and MIMIC-IV-ECG-ICD-ED statistics:
 ![alt text](https://github.com/AI4HealthUOL/ECG-MIMIC/blob/main/reports/description.png?style=centerme)
 
 
@@ -69,13 +69,18 @@ You can find all the experimental results for each of the labels and scenarios u
 ## Reference
 
 ```bibtex
-@misc{strodthoff2023cardiac,
-      title={Cardiac and extracardiac discharge diagnosis prediction from emergency department ECGs using deep learning}, 
-      author={Nils Strodthoff and Juan Miguel Lopez Alcaraz and Wilhelm Haverkamp},
-      year={2023},
-      eprint={2312.11050},
-      archivePrefix={arXiv},
-      primaryClass={eess.SP}
+@article{10.1093/ehjdh/ztae039,
+    author = {Strodthoff, Nils and Lopez Alcaraz, Juan Miguel and Haverkamp, Wilhelm},
+    title = "{Prospects for AI-Enhanced ECG as a Unified Screening Tool for Cardiac and Non-Cardiac Conditions – An Explorative Study in Emergency Care}",
+    journal = {European Heart Journal - Digital Health},
+    pages = {ztae039},
+    year = {2024},
+    month = {05},
+    abstract = "{Current deep learning algorithms designed for automatic ECG analysis have exhibited notable accuracy. However, akin to traditional electrocardiography, they tend to be narrowly focused and typically address a singular diagnostic condition. In this exploratory study, we specifically investigate the capability of a single model to predict a diverse range of both cardiac and non-cardiac discharge diagnoses based on a sole ECG collected in the emergency department. We find that 253, 81 cardiac and 172 non-cardiac, ICD codes can be reliably predicted in the sense of exceeding an AUROC score of 0.8 in a statistically significant manner. This underscores the model’s proficiency in handling a wide array of cardiac and non-cardiac diagnostic scenarios which demonstrates potential as a screening tool for diverse medical encounters.}",
+    issn = {2634-3916},
+    doi = {10.1093/ehjdh/ztae039},
+    url = {https://doi.org/10.1093/ehjdh/ztae039},
+    eprint = {https://academic.oup.com/ehjdh/advance-article-pdf/doi/10.1093/ehjdh/ztae039/57553846/ztae039.pdf},
 }
 ```
 
