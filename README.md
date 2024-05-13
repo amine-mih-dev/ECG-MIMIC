@@ -1,4 +1,4 @@
-# Cardiac and extracardiac discharge diagnosis prediction from emergency department ECGs using deep learning
+# Prospects for AI-Enhanced ECG as a Unified Screening Tool for Cardiac and Non-Cardiac Conditions -- An Explorative Study in Emergency Care
 
 
 This repository hosts the code of the paper [Prospects for AI-Enhanced ECG as a Unified Screening Tool for Cardiac and Non-Cardiac Conditions -- An Explorative Study in Emergency Care](https://arxiv.org/abs/2312.11050)). <ins>Accepted by European Heart Journal Digital Health</ins>
