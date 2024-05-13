@@ -1,7 +1,7 @@
 # Prospects for AI-Enhanced ECG as a Unified Screening Tool for Cardiac and Non-Cardiac Conditions -- An Explorative Study in Emergency Care
 
 
-This repository hosts the code of the paper [Prospects for AI-Enhanced ECG as a Unified Screening Tool for Cardiac and Non-Cardiac Conditions -- An Explorative Study in Emergency Care](https://arxiv.org/abs/2312.11050)). <ins>Accepted by European Heart Journal Digital Health</ins>
+This repository hosts the code of the paper [Prospects for AI-Enhanced ECG as a Unified Screening Tool for Cardiac and Non-Cardiac Conditions -- An Explorative Study in Emergency Care](https://academic.oup.com/ehjdh/advance-article/doi/10.1093/ehjdh/ztae039/7670685). <ins>Accepted by European Heart Journal Digital Health.</ins>
 In this study we introduced a unified deep learning model for ECG analysis, predicting a wide range of cardiac and non-cardiac discharge diagnoses based on the ICD10 classification system with impressive AUROC scores. Our approach excels in handling diverse diagnostic scenarios, suggesting its use as a screening tool in emergency departments, integrated into clinical decision support systems. We therefore propose the MIMIC-IV-ECG-ICD-ED dataset primarily for benchmark purposes derived from the MIMIC-IV and MIMIC-IV-ECG databases.
 
 ## MIMIC-IV-ECG-ICD-ED experimental workflow:
