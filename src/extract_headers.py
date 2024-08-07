@@ -13,12 +13,12 @@ def extract_and_open_files_in_zip(zip_file_path, extension):
     ecg_records = []
     with zipfile.ZipFile(zip_file_path, 'r') as zip_ref:
         for file_info in tqdm(zip_ref.infolist()):
-            if file_info.file_name.endswith(extension):
+            if file_info.filename.endswith(extension):
                 # Extract the file to a temporary directory
-                extract_path = file_info.file_name
+                extract_path = file_info.filename
                 os.makedirs(os.path.dirname(extract_path), exist_ok=True)
                 with open(extract_path, 'wb') as extracted_file:
-                    extracted_file.write(zip_ref.read(file_info.file_name))
+                    extracted_file.write(zip_ref.read(file_info.filename))
                 
                 # Open the extracted file using wfdb
                 metadata = wfdb.rdheader(extract_path[:-len(extension)])

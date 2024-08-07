@@ -9,7 +9,7 @@ from extract_headers import extract_and_open_files_in_zip
 #requires icd-mappings
 from icdmappings import Mapper
 from ecg_utils import prepare_mimicecg
-from timeseries_utils import reformat_as_memmap
+from clinical_ts.timeseries_utils import reformat_as_memmap
 
 from mimic_ecg_preprocessing import prepare_mimic_ecg
 
@@ -23,7 +23,7 @@ def main():
     parser.add_argument('--target-path', help='desired output path',default="./")
     
     # you have to explicitly pass this argument to convert to numpy and memmapp
-    parset.add_argument('--numpy-memmap', help='convert to numpy and memmap for fast access', action='store_true')
+    parser.add_argument('--numpy-memmap', help='convert to numpy and memmap for fast access', action='store_true')
     
     # Parse the command-line arguments
     args = parser.parse_args()
@@ -52,6 +52,10 @@ def main():
     
     #################################################################################################
     print("Step 2: Extract diagnoses for records in raw format to create records_w_diag.pkl")
+    mapper = Mapper()
+    df_hosp_icd_description = pd.read_csv(mimic_path/"hosp/d_icd_diagnoses.csv.gz")
+    df_hosp_icd_description["icd10_code"]=df_hosp_icd_description.apply(lambda row:row["icd_code"] if row["icd_version"]==10 else mapper.map(row["icd_code"], source="icd9", target="icd10"),axis=1)#mapper="icd9toicd10"
+    icd_mapping = {ic:ic10 for ic,ic10 in zip(df_hosp_icd_description["icd_code"],df_hosp_icd_description["icd10_code"])}
     if((target_path/"records_w_diag.pkl").exists()):
         print("Skipping: using existing records_w_diag.pkl")
         df_full = pd.read_pickle(target_path/"records_w_diag.pkl")
@@ -140,6 +144,8 @@ def main():
 
         #add demographics
         df_hosp_patients = pd.read_csv(mimic_path/"hosp/patients.csv.gz")
+        # rename patient_id to subject_id in df_full
+        df_full.rename(columns={'patient_id':'subject_id'}, inplace=True)
         df_full=df_full.join(df_hosp_patients.set_index("subject_id"),on="subject_id")
         df_full["age"]=df_full.ecg_time.apply(lambda x: x.year)-df_full.anchor_year+df_full.anchor_age
 
@@ -159,8 +165,9 @@ def main():
         df_full["fold"] = np.load('utils/folds.npy')
         
         # STRATIFIED FOLDS based on'all_diag'. folds not used in experiments, but provided for convenience
-        df_full, _ = prepare_mimic_ecg('mimic_all_all_allfirst_all_2000_5A',target_folder,df_mapped=None,df_diags=df_full)
-        df_full['label'] = df_full['label'].apply(lambda x: x if x else ['outpatient'])
+        df_full, _ = prepare_mimic_ecg('mimic_all_all_allfirst_all_2000_5A',target_path,df_mapped=None,df_diags=df_full)
+        print(df_full.columns)
+        # df_full['label'] = df_full['label'].apply(lambda x: x if x else ['outpatient'])
         df_full['age_bin'] = pd.qcut(df_full['age'], q=4)
         df_full.rename(columns={'label_train':'label_strat_all2all'}, inplace=True)
         df_full['label_strat_all2all'] = df_full['label_strat_all2all'].apply(lambda x: x if x else ['outpatient'])
@@ -172,6 +179,7 @@ def main():
         df_full['gender'] = df_full['gender'].fillna('missing')
         col_label = "label_strat_all2all"
         col_group = ['subject_id','age_bin','gender']
+        from utils.stratify import stratified_subsets
         res = stratified_subsets(df_full,
                        col_label,
                        [0.05]*20,
@@ -179,28 +187,28 @@ def main():
                        label_multi_hot=False,
                        random_seed=42)
         df_full['strat_fold'] = res
-        df=df[["file_name",
-               "study_id",
-               "subject_id",
-               "ecg_time",
-               "ed_stay_id",
-               "ed_hadm_id",
-               "hosp_hadm_id",
-               "ed_diag_ed",
-               "ed_diag_hosp",
-               "hosp_diag_hosp",
-               "all_diag_hosp",
-               "all_diag_all",
-               "gender","age",
-               "anchor_year",
-               "anchor_age",
-               "dod",
-               "ecg_no_within_stay",
-               "ecg_taken_in_ed",
-               "ecg_taken_in_hosp",
-               "ecg_taken_in_ed_or_hosp",
-               "fold",
-               "strat_fold"]]
+        # df=df[["file_name",
+        #        "study_id",
+        #        "subject_id",
+        #        "ecg_time",
+        #        "ed_stay_id",
+        #        "ed_hadm_id",
+        #        "hosp_hadm_id",
+        #        "ed_diag_ed",
+        #        "ed_diag_hosp",
+        #        "hosp_diag_hosp",
+        #        "all_diag_hosp",
+        #        "all_diag_all",
+        #        "gender","age",
+        #        "anchor_year",
+        #        "anchor_age",
+        #        "dod",
+        #        "ecg_no_within_stay",
+        #        "ecg_taken_in_ed",
+        #        "ecg_taken_in_hosp",
+        #        "ecg_taken_in_ed_or_hosp",
+        #        "fold",
+        #        "strat_fold"]]
         df_full.to_csv(target_path/"records_w_diag_icd10.csv", index=False)
         
         

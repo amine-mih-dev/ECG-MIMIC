@@ -57,10 +57,29 @@ def multihot_encode(x, num_classes):
 ############################################################################################################
 #at this scope to avoid pickle issues
 def mcrc_flat(targs,preds,classes):
+    """
+    Compute multiclass ROC curve for flat predictions
+    args:
+    targs: target labels
+    preds: predicted labels
+    classes: class names
+
+    returns:
+    fpr: false positive rate
+    """
     _,_,res = multiclass_roc_curve(targs,preds,classes=classes)
     return np.array(list(res.values()))
 
 def prepare_consistency_mapping(codes_unique, codes_unique_all, propagate_all=False):
+    """
+    Prepare consistency mapping for hierarchical labels
+    
+    args:
+    codes_unique: unique codes for current dataset
+    
+    codes_unique_all: unique codes for all datasets
+    
+    propagate_all: propagate all codes or only if categories are already present"""
     res={}
     for c in codes_unique:
         if(propagate_all):
@@ -507,7 +526,8 @@ if __name__ == '__main__':
         precision=hparams.precision,
         #distributed_backend=hparams.distributed_backend,
         
-        enable_progress_bar=hparams.refresh_rate>0)
+        enable_progress_bar=True#hparams.refresh_rate>0
+        )
         
     if(hparams.auto_batch_size):#auto tune batch size batch size
         tuner=Tuner(trainer)

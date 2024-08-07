@@ -38,7 +38,7 @@ def resample_data(sigbufs, channel_labels, fs, target_fs, channels=12, channel_s
         data = resampy.resample(sigbufs, fs, target_fs, axis=0).astype(np.float32)
     return data
 
-def prepare_mimicecg(data_path="", clip_amp=3, target_fs=100, channels=12, strat_folds=20, channel_stoi=channel_stoi_default, target_folder=None, recreate_data=True):
+def prepare_mimicecg(data_path="", clip_amp=3, target_fs=250, channels=12, strat_folds=20, channel_stoi=channel_stoi_default, target_folder=None, recreate_data=True):
 
     def fix_nans_and_clip(signal,clip_amp=3):
         for i in range(signal.shape[1]):
