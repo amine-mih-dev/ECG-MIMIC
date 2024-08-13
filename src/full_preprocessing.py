@@ -10,7 +10,7 @@ from extract_headers import extract_and_open_files_in_zip
 from icdmappings import Mapper
 from ecg_utils import prepare_mimicecg
 from clinical_ts.timeseries_utils import reformat_as_memmap
-
+from utils.stratify import stratified_subsets
 from mimic_ecg_preprocessing import prepare_mimic_ecg
 
 
@@ -166,20 +166,19 @@ def main():
         
         # STRATIFIED FOLDS based on'all_diag'. folds not used in experiments, but provided for convenience
         df_full, _ = prepare_mimic_ecg('mimic_all_all_allfirst_all_2000_5A',target_path,df_mapped=None,df_diags=df_full)
-        print(df_full.columns)
-        # df_full['label'] = df_full['label'].apply(lambda x: x if x else ['outpatient'])
-        df_full['age_bin'] = pd.qcut(df_full['age'], q=4)
+        df_full['label_train'] = df_full['label_train'].apply(lambda x: x if x else ['outpatient'])
         df_full.rename(columns={'label_train':'label_strat_all2all'}, inplace=True)
-        df_full['label_strat_all2all'] = df_full['label_strat_all2all'].apply(lambda x: x if x else ['outpatient'])
         age_bins = pd.qcut(df_full['age'], q=4)
         unique_intervals = age_bins.cat.categories
         bin_labels = {interval: f'{interval.left}-{interval.right}' for interval in unique_intervals}
         df_full['age_bin'] = age_bins.map(bin_labels)
-        df_full['age_bin'] = df_full['age_bin'].cat.add_categories(['missing']).fillna('missing')
-        df_full['gender'] = df_full['gender'].fillna('missing')
-        col_label = "label_strat_all2all"
-        col_group = ['subject_id','age_bin','gender']
-        from utils.stratify import stratified_subsets
+        df_full['age_bin'] = df_full['age_bin'].cat.add_categories(['missing_age']).fillna('missing_age')
+        df_full['gender'] = df_full['gender'].fillna('missing_gender')
+
+        df_full['merged_strat'] = df_full.apply(lambda row: row['label_strat_all2all'] + [row['age_bin'], row['gender']], axis=1)
+
+        col_label = 'merged_strat'
+        col_group = 'subject_id'
         res = stratified_subsets(df_full,
                        col_label,
                        [0.05]*20,
@@ -187,28 +186,28 @@ def main():
                        label_multi_hot=False,
                        random_seed=42)
         df_full['strat_fold'] = res
-        # df=df[["file_name",
-        #        "study_id",
-        #        "subject_id",
-        #        "ecg_time",
-        #        "ed_stay_id",
-        #        "ed_hadm_id",
-        #        "hosp_hadm_id",
-        #        "ed_diag_ed",
-        #        "ed_diag_hosp",
-        #        "hosp_diag_hosp",
-        #        "all_diag_hosp",
-        #        "all_diag_all",
-        #        "gender","age",
-        #        "anchor_year",
-        #        "anchor_age",
-        #        "dod",
-        #        "ecg_no_within_stay",
-        #        "ecg_taken_in_ed",
-        #        "ecg_taken_in_hosp",
-        #        "ecg_taken_in_ed_or_hosp",
-        #        "fold",
-        #        "strat_fold"]]
+        df=df[["file_name",
+               "study_id",
+               "subject_id",
+               "ecg_time",
+               "ed_stay_id",
+               "ed_hadm_id",
+               "hosp_hadm_id",
+               "ed_diag_ed",
+               "ed_diag_hosp",
+               "hosp_diag_hosp",
+               "all_diag_hosp",
+               "all_diag_all",
+               "gender","age",
+               "anchor_year",
+               "anchor_age",
+               "dod",
+               "ecg_no_within_stay",
+               "ecg_taken_in_ed",
+               "ecg_taken_in_hosp",
+               "ecg_taken_in_ed_or_hosp",
+               "fold",
+               "strat_fold"]]
         df_full.to_csv(target_path/"records_w_diag_icd10.csv", index=False)
         
         
